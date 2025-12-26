@@ -164,6 +164,7 @@ const AdminOrders = () => {
                                         <TableHead className="text-right">العميل</TableHead>
                                         <TableHead className="text-right">الهاتف</TableHead>
                                         <TableHead className="text-right">الولاية</TableHead>
+                                        <TableHead className="text-right">البلدية</TableHead>
                                         <TableHead className="text-right">المبلغ</TableHead>
                                         <TableHead className="text-right">الحالة</TableHead>
                                         <TableHead className="text-right">الإجراءات</TableHead>
@@ -175,12 +176,21 @@ const AdminOrders = () => {
                                             <TableCell>
                                                 <span className="font-mono text-sm">{order.trackingNumber}</span>
                                             </TableCell>
-                                            <TableCell>{order.customerName || order.userId}</TableCell>
-                                            <TableCell>{order.customerPhone}</TableCell>
-                                            <TableCell>{order.wilayaName || order.wilayaId}</TableCell>
+                                            <TableCell>
+                                                {order.user ? `${order.user.firstName} ${order.user.lastName}` : (order.customerName || order.userId)}
+                                            </TableCell>
+                                            <TableCell className="font-mono text-sm" dir="ltr">
+                                                {order.user?.phone || order.customerPhone}
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.wilaya?.name || order.wilayaName || order.wilayaId}
+                                            </TableCell>
+                                            <TableCell>
+                                                {order.baladiya?.name || order.baladiyaName || order.baladiyaId}
+                                            </TableCell>
                                             <TableCell>
                                                 <span className="font-bold text-primary">
-                                                    {(parseFloat(order.totalAmount.toString()) + parseFloat(order.deliveryCost.toString())).toFixed(2)} ر.س
+                                                    {(parseFloat(order.totalAmount.toString()) + parseFloat(order.deliveryCost.toString())).toFixed(2)} دج
                                                 </span>
                                             </TableCell>
                                             <TableCell>

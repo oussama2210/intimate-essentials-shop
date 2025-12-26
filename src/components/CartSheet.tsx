@@ -37,7 +37,7 @@ const CartSheet = () => {
             />
             <div className="flex-1">
               <h4 className="font-medium text-sm">{item.name}</h4>
-              <p className="text-primary font-bold">{item.price} ر.س</p>
+              <p className="text-primary font-bold">{item.price} دج</p>
               <div className="flex items-center gap-2 mt-2">
                 <Button
                   variant="outline"
@@ -73,7 +73,7 @@ const CartSheet = () => {
       <div className="pt-4 border-t border-border space-y-4">
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">المجموع</span>
-          <span className="text-2xl font-bold text-gradient-gold">{totalPrice} ر.س</span>
+          <span className="text-2xl font-bold text-gradient-gold">{totalPrice} دج</span>
         </div>
         <SheetClose asChild>
           <Link to="/checkout" className="block">

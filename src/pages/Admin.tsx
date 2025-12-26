@@ -193,7 +193,7 @@ const Admin = () => {
             { label: "إجمالي المنتجات", value: products.length, icon: Package },
             { label: "المنتجات المميزة", value: products.filter(p => p.featured).length, icon: Package },
             { label: "إجمالي المخزون", value: products.reduce((sum, p) => sum + p.stock, 0), icon: Package },
-            { label: "متوسط السعر", value: `${Math.round(products.reduce((sum, p) => sum + p.price, 0) / products.length)} ر.س`, icon: Package },
+            { label: "متوسط السعر", value: `${Math.round(products.reduce((sum, p) => sum + p.price, 0) / products.length)} دج`, icon: Package },
           ].map((stat, i) => (
             <div key={i} className="bg-card rounded-xl p-6 border border-border">
               <div className="flex items-center gap-3 mb-2">
@@ -374,7 +374,7 @@ const Admin = () => {
                     </TableCell>
                     <TableCell>{product.category}</TableCell>
                     <TableCell>
-                      <span className="font-bold text-primary">{product.price} ر.س</span>
+                      <span className="font-bold text-primary">{product.price} دج</span>
                     </TableCell>
                     <TableCell>
                       <span className={product.stock > 10 ? "text-green-500" : "text-destructive"}>

@@ -67,7 +67,7 @@ const OrderSuccess = () => {
                                 <div>
                                     <p className="text-sm text-muted-foreground mb-1">المجموع الكلي</p>
                                     <p className="text-xl font-bold">
-                                        {parseFloat(order.totalAmount.toString()) + parseFloat(order.deliveryCost.toString())} ر.س
+                                        {parseFloat(order.totalAmount.toString()) + parseFloat(order.deliveryCost.toString())} دج
                                     </p>
                                 </div>
                                 <div>
@@ -113,7 +113,7 @@ const OrderSuccess = () => {
                                             {item.productName} × {item.quantity}
                                         </span>
                                         <span className="font-medium">
-                                            {parseFloat(item.totalPrice.toString())} ر.س
+                                            {parseFloat(item.totalPrice.toString())} دج
                                         </span>
                                     </div>
                                 ))}

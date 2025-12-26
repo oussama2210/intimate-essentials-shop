@@ -335,7 +335,7 @@ const Checkout = () => {
                                                 <div className="flex-1">
                                                     <p className="font-medium text-sm">{item.name}</p>
                                                     <p className="text-sm text-muted-foreground">
-                                                        الكمية: {item.quantity} × {item.price} ر.س
+                                                        الكمية: {item.quantity} × {item.price} دج
                                                     </p>
                                                 </div>
                                             </div>
@@ -348,19 +348,19 @@ const Checkout = () => {
                                     <div className="space-y-2">
                                         <div className="flex justify-between text-sm">
                                             <span className="text-muted-foreground">المجموع الفرعي</span>
-                                            <span className="font-medium">{totalPrice} ر.س</span>
+                                            <span className="font-medium">{totalPrice} دج</span>
                                         </div>
                                         <div className="flex justify-between text-sm">
                                             <span className="text-muted-foreground">تكلفة التوصيل</span>
                                             <span className="font-medium">
-                                                {deliveryCost > 0 ? `${deliveryCost} ر.س` : "---"}
+                                                {deliveryCost > 0 ? `${deliveryCost} دج` : "---"}
                                             </span>
                                         </div>
                                         <Separator />
                                         <div className="flex justify-between items-center">
                                             <span className="font-bold">المجموع الكلي</span>
                                             <span className="text-2xl font-bold text-gradient-gold">
-                                                {finalTotal} ر.س
+                                                {finalTotal} دج
                                             </span>
                                         </div>
                                     </div>

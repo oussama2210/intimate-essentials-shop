@@ -5,7 +5,7 @@ import { Truck, Shield, Clock, Headphones } from "lucide-react";
 
 const Index = () => {
   const features = [
-    { icon: Truck, title: "شحن مجاني", desc: "للطلبات فوق 200 ر.س" },
+    { icon: Truck, title: "شحن مجاني", desc: "للطلبات فوق 200 دج" },
     { icon: Shield, title: "ضمان الجودة", desc: "منتجات أصلية 100%" },
     { icon: Clock, title: "توصيل سريع", desc: "خلال 24-48 ساعة" },
     { icon: Headphones, title: "دعم متواصل", desc: "خدمة عملاء 24/7" },
@@ -14,10 +14,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-16">
         <HeroSection />
-        
+
         {/* Features */}
         <section className="py-16 border-y border-border">
           <div className="container mx-auto px-4">

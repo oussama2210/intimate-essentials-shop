@@ -256,12 +256,12 @@ const QuickOrderForm = ({ product, quantity }: QuickOrderFormProps) => {
                     <div className="flex justify-between items-center mb-4 text-sm">
                         <span>التوصيل:</span>
                         <span className="font-bold text-primary">
-                            {deliveryCost > 0 ? `${deliveryCost} ر.س` : "يتم الحساب عند اختيار الولاية"}
+                            {deliveryCost > 0 ? `${deliveryCost} دج` : "يتم الحساب عند اختيار الولاية"}
                         </span>
                     </div>
                     <div className="flex justify-between items-center mb-4 text-lg font-bold">
                         <span>الإجمالي:</span>
-                        <span className="text-gradient-gold">{totalAmount} ر.س</span>
+                        <span className="text-gradient-gold">{totalAmount} دج</span>
                     </div>
 
                     <Button

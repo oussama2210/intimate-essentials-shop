@@ -16,6 +16,21 @@ export interface Order {
     baladiyaName?: string;
     trackingNumber: string;
     items: OrderItem[];
+    user?: {
+        firstName: string;
+        lastName: string;
+        phone: string;
+        email?: string;
+    };
+    wilaya?: {
+        id: number;
+        name: string;
+        code: string;
+    };
+    baladiya?: {
+        id: number;
+        name: string;
+    };
     createdAt: string;
     updatedAt: string;
 }
