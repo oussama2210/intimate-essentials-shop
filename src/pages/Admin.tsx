@@ -24,11 +24,13 @@ import { Switch } from "@/components/ui/switch";
 import { Plus, Pencil, Trash2, ArrowRight, Package } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { uploadService } from "@/services/uploadService";
 
 const Admin = () => {
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
+  const { products, addProduct, updateProduct, deleteProduct, isLoading } = useProducts();
   const [isOpen, setIsOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     nameEn: "",
@@ -42,6 +44,36 @@ const Admin = () => {
     rating: "4.5",
     reviews: "0",
   });
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const response = await uploadService.uploadImage(file);
+      if (response.success && response.data) {
+        // Construct full URL with API base if needed, or use relative if proxy handles it.
+        // For local dev, we need full URL often if ports differ.
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+        // Check if url already has http (cloud storage) or is relative
+        const url = response.data.url.startsWith('http')
+          ? response.data.url
+          : `${apiUrl}${response.data.url}`;
+
+        setFormData(prev => ({ ...prev, image: url }));
+        toast.success("تم رفع الصورة بنجاح");
+      } else {
+        toast.error("فشل رفع الصورة");
+      }
+    } catch (error) {
+      console.error('Upload error:', error);
+      toast.error("حدث خطأ أثناء رفع الصورة");
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -78,39 +110,47 @@ const Admin = () => {
     setIsOpen(true);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    const productData = {
-      name: formData.name,
-      nameEn: formData.nameEn,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
-      image: formData.image,
-      category: formData.category,
-      stock: parseInt(formData.stock),
-      featured: formData.featured,
-      rating: parseFloat(formData.rating),
-      reviews: parseInt(formData.reviews),
-    };
+    setIsSubmitting(true);
 
-    if (editingProduct) {
-      updateProduct(editingProduct.id, productData);
-      toast.success("تم تحديث المنتج بنجاح");
-    } else {
-      addProduct(productData);
-      toast.success("تم إضافة المنتج بنجاح");
+    try {
+      const productData = {
+        name: formData.name,
+        nameEn: formData.nameEn,
+        description: formData.description,
+        price: parseFloat(formData.price),
+        originalPrice: formData.originalPrice ? parseFloat(formData.originalPrice) : undefined,
+        image: formData.image,
+        category: formData.category,
+        stock: parseInt(formData.stock),
+        featured: formData.featured,
+        rating: parseFloat(formData.rating),
+        reviews: parseInt(formData.reviews),
+      };
+
+      if (editingProduct) {
+        await updateProduct(editingProduct.id, productData);
+      } else {
+        await addProduct(productData);
+      }
+
+      resetForm();
+      setIsOpen(false);
+    } catch (error) {
+      console.error('Submit error:', error);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    resetForm();
-    setIsOpen(false);
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-      deleteProduct(id);
-      toast.success("تم حذف المنتج بنجاح");
+      try {
+        await deleteProduct(id);
+      } catch (error) {
+        console.error('Delete error:', error);
+      }
     }
   };
 
@@ -130,11 +170,18 @@ const Admin = () => {
               <ArrowRight className="w-4 h-4 text-muted-foreground" />
               <span className="font-medium">لوحة التحكم</span>
             </div>
-            <Link to="/">
-              <Button variant="outline" size="sm">
-                العودة للمتجر
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link to="/admin/orders">
+                <Button variant="outline" size="sm">
+                  إدارة الطلبات
+                </Button>
+              </Link>
+              <Link to="/">
+                <Button variant="outline" size="sm">
+                  العودة للمتجر
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </header>
@@ -229,13 +276,36 @@ const Admin = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="image">رابط الصورة</Label>
-                    <Input
-                      id="image"
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      required
-                    />
+                    <Label htmlFor="image">صورة المنتج</Label>
+                    <div className="flex gap-4 items-start">
+                      <div className="flex-1 space-y-2">
+                        <Input
+                          id="image-upload"
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={isUploading}
+                          className="cursor-pointer"
+                        />
+                        <Input
+                          id="image"
+                          value={formData.image}
+                          onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                          placeholder="أو أدخل رابط الصورة مباشرة"
+                          disabled={isUploading}
+                        />
+                      </div>
+                      {formData.image && (
+                        <div className="w-20 h-20 rounded-lg border border-border overflow-hidden relative group">
+                          <img
+                            src={formData.image}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
+                    {isUploading && <p className="text-sm text-muted-foreground animate-pulse">جارٍ رفع الصورة...</p>}
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
@@ -266,8 +336,8 @@ const Admin = () => {
                     />
                     <Label htmlFor="featured">منتج مميز</Label>
                   </div>
-                  <Button type="submit" variant="gold" className="w-full">
-                    {editingProduct ? "تحديث المنتج" : "إضافة المنتج"}
+                  <Button type="submit" variant="gold" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? "جارٍ الحفظ..." : (editingProduct ? "تحديث المنتج" : "إضافة المنتج")}
                   </Button>
                 </form>
               </DialogContent>

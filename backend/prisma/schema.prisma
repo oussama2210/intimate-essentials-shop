@@ -1,0 +1,201 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  firstName String   @map("first_name")
+  lastName  String   @map("last_name")
+  phone     String   @unique
+  email     String?  @unique
+  wilayaId  Int      @map("wilaya_id")
+  baladiyaId Int     @map("baladiya_id")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  wilaya   Wilaya   @relation(fields: [wilayaId], references: [id])
+  baladiya Baladiya @relation(fields: [baladiyaId], references: [id])
+  orders   Order[]
+
+  @@map("users")
+}
+
+model Admin {
+  id           String    @id @default(cuid())
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  email        String    @unique
+  role         AdminRole @default(ADMIN)
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model Wilaya {
+  id               Int     @id
+  name             String
+  code             String  @unique
+  deliveryBaseCost Decimal @map("delivery_base_cost") @db.Decimal(10, 2) // Deprecated
+  homeDeliveryCost Decimal @default(0) @map("home_delivery_cost") @db.Decimal(10, 2)
+  officeDeliveryCost Decimal @default(0) @map("office_delivery_cost") @db.Decimal(10, 2)
+
+  // Relations
+  baladiya      Baladiya[]
+  users         User[]
+  orders        Order[]
+  deliveryZones DeliveryZone[]
+
+  @@map("wilayas")
+}
+
+model Baladiya {
+  id         Int    @id @default(autoincrement())
+  name       String
+  wilayaId   Int    @map("wilaya_id")
+  postalCode String @map("postal_code")
+
+  // Relations
+  wilaya Wilaya @relation(fields: [wilayaId], references: [id])
+  users  User[]
+  orders Order[]
+
+  @@map("baladiya")
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  parentId    String? @map("parent_id")
+
+  // Relations
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  name          String
+  nameEn        String?  @map("name_en")
+  description   String
+  price         Decimal  @db.Decimal(10, 2)
+  originalPrice Decimal? @map("original_price") @db.Decimal(10, 2)
+  stockQuantity Int      @map("stock_quantity")
+  categoryId    String   @map("category_id")
+  imageUrl      String?  @map("image_url")
+  featured      Boolean  @default(false)
+  rating        Decimal  @default(4.5) @db.Decimal(3, 2)
+  reviews       Int      @default(0)
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  category   Category       @relation(fields: [categoryId], references: [id])
+  images     ProductImage[]
+  orderItems OrderItem[]
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  productId String  @map("product_id")
+  url       String
+  altText   String? @map("alt_text")
+  isPrimary Boolean @default(false) @map("is_primary")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@map("product_images")
+}
+
+model Order {
+  id              String        @id @default(cuid())
+  userId          String        @map("user_id")
+  status          OrderStatus   @default(PENDING)
+  paymentMethod   PaymentMethod @default(CASH_ON_DELIVERY) @map("payment_method")
+  paymentStatus   PaymentStatus @default(PENDING) @map("payment_status")
+  totalAmount     Decimal       @map("total_amount") @db.Decimal(10, 2)
+  deliveryCost    Decimal       @map("delivery_cost") @db.Decimal(10, 2)
+  deliveryAddress String        @map("delivery_address")
+  wilayaId        Int           @map("wilaya_id")
+  baladiyaId      Int           @map("baladiya_id")
+  trackingNumber  String        @unique @map("tracking_number")
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  // Relations
+  user     User        @relation(fields: [userId], references: [id])
+  wilaya   Wilaya      @relation(fields: [wilayaId], references: [id])
+  baladiya Baladiya    @relation(fields: [baladiyaId], references: [id])
+  items    OrderItem[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String  @id @default(cuid())
+  orderId    String  @map("order_id")
+  productId  String  @map("product_id")
+  quantity   Int
+  unitPrice  Decimal @map("unit_price") @db.Decimal(10, 2)
+  totalPrice Decimal @map("total_price") @db.Decimal(10, 2)
+
+  // Relations
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@map("order_items")
+}
+
+model DeliveryZone {
+  id            String  @id @default(cuid())
+  wilayaId      Int     @map("wilaya_id")
+  baseCost      Decimal @map("base_cost") @db.Decimal(10, 2)
+  estimatedDays Int     @map("estimated_days")
+  isActive      Boolean @default(true) @map("is_active")
+
+  // Relations
+  wilaya Wilaya @relation(fields: [wilayaId], references: [id])
+
+  @@map("delivery_zones")
+}
+
+enum AdminRole {
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  CASH_ON_DELIVERY
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}

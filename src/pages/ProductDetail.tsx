@@ -1,4 +1,5 @@
 import { useParams, Link } from "react-router-dom";
+import QuickOrderForm from "@/components/QuickOrderForm";
 import { useProducts } from "@/context/ProductContext";
 import { useCart } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
@@ -48,7 +49,7 @@ const ProductDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      
+
       <main className="pt-24 pb-16">
         <div className="container mx-auto px-4">
           {/* Breadcrumb */}
@@ -96,11 +97,10 @@ const ProductDetail = () => {
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-5 h-5 ${
-                        i < Math.floor(product.rating)
-                          ? "text-primary fill-primary"
-                          : "text-muted-foreground"
-                      }`}
+                      className={`w-5 h-5 ${i < Math.floor(product.rating)
+                        ? "text-primary fill-primary"
+                        : "text-muted-foreground"
+                        }`}
                     />
                   ))}
                 </div>
@@ -142,35 +142,41 @@ const ProductDetail = () => {
                 {product.stock > 0 ? `متوفر (${product.stock} قطعة)` : "غير متوفر"}
               </p>
 
-              {/* Quantity & Add to Cart */}
-              <div className="flex flex-col sm:flex-row gap-4">
-                <div className="flex items-center gap-4 bg-secondary rounded-lg p-2">
+              {/* Actions */}
+              <div className="space-y-4 pt-6 border-t border-border">
+                <div className="flex gap-4">
+                  <div className="flex items-center gap-3 bg-secondary rounded-lg p-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="w-8 text-center font-bold text-lg">{quantity}</span>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-10 w-10"
+                      onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
                   <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    variant="outline"
+                    className="flex-1 h-12 text-lg font-bold border-2"
+                    onClick={handleAddToCart}
+                    disabled={product.stock === 0}
                   >
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <span className="w-12 text-center font-bold text-lg">{quantity}</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                  >
-                    <Plus className="w-4 h-4" />
+                    <ShoppingCart className="w-5 h-5 ml-2" />
+                    أضف للسلة
                   </Button>
                 </div>
-                <Button
-                  variant="gold"
-                  size="xl"
-                  className="flex-1"
-                  onClick={handleAddToCart}
-                  disabled={product.stock === 0}
-                >
-                  <ShoppingCart className="w-5 h-5" />
-                  أضف إلى السلة
-                </Button>
+
+                {/* Direct Order Form */}
+                <QuickOrderForm product={product} quantity={quantity} />
               </div>
             </div>
           </div>

@@ -83,10 +83,9 @@ const ProductCard = ({ product }: ProductCardProps) => {
             variant="gold"
             size="sm"
             className="w-full opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0"
-            onClick={handleAddToCart}
           >
-            <ShoppingCart className="w-4 h-4" />
-            أضف للسلة
+            <ShoppingCart className="w-4 h-4 ml-2" />
+            اطلب الآن
           </Button>
         </div>
       </div>

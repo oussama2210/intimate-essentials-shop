@@ -1,7 +1,8 @@
 import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/CartContext";
-import { SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
+import { Link } from "react-router-dom";
 
 const CartSheet = () => {
   const { items, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
@@ -74,9 +75,13 @@ const CartSheet = () => {
           <span className="text-muted-foreground">المجموع</span>
           <span className="text-2xl font-bold text-gradient-gold">{totalPrice} ر.س</span>
         </div>
-        <Button variant="gold" size="lg" className="w-full">
-          إتمام الشراء
-        </Button>
+        <SheetClose asChild>
+          <Link to="/checkout" className="block">
+            <Button variant="gold" size="lg" className="w-full">
+              إتمام الشراء
+            </Button>
+          </Link>
+        </SheetClose>
         <Button variant="outline" size="sm" className="w-full" onClick={clearCart}>
           إفراغ السلة
         </Button>
