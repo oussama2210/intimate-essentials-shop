@@ -37,7 +37,7 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({ onSuccess }) => 
   const onSubmit = async (data: LoginFormData) => {
     try {
       const response = await login(data as LoginCredentials);
-      
+
       if (response.success) {
         onSuccess?.();
       } else {
@@ -143,9 +143,9 @@ export const AdminLoginForm: React.FC<AdminLoginFormProps> = ({ onSuccess }) => 
         </form>
 
         <div className="mt-6 text-center text-sm text-muted-foreground">
-          <p>Default credentials for testing:</p>
+          <p></p>
           <p className="font-mono text-xs mt-1">
-            Username: admin | Password: admin123
+
           </p>
         </div>
       </CardContent>
