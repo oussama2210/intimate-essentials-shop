@@ -19,6 +19,13 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Debugging: Log API URL to console
+console.log('------------------------------------------------');
+console.log('🚀 APP STARTUP DEBUG');
+console.log('📍 Current Environment:', import.meta.env.MODE);
+console.log('🔗 VITE_API_URL:', import.meta.env.VITE_API_URL);
+console.log('------------------------------------------------');
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
