@@ -163,9 +163,9 @@ const Admin = () => {
             <div className="flex items-center gap-4">
               <Link to="/" className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-lg bg-gradient-gold flex items-center justify-center">
-                  <span className="text-primary-foreground font-bold">S</span>
+                  <span className="text-primary-foreground font-bold text-xs">SB</span>
                 </div>
-                <span className="font-bold text-gradient-gold">سيال</span>
+                <span className="font-bold text-gradient-gold">Sarah Boutique</span>
               </Link>
               <ArrowRight className="w-4 h-4 text-muted-foreground" />
               <span className="font-medium">لوحة التحكم</span>

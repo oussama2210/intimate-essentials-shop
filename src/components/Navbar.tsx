@@ -25,9 +25,9 @@ const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-gradient-gold flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xl">S</span>
+              <span className="text-primary-foreground font-bold text-lg">SB</span>
             </div>
-            <span className="text-xl font-bold text-gradient-gold">سيال</span>
+            <span className="text-xl font-bold text-gradient-gold">Sarah Boutique</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -36,9 +36,8 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 to={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(link.href) ? "text-primary" : "text-muted-foreground"
-                }`}
+                className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                  }`}
               >
                 {link.label}
               </Link>
@@ -89,9 +88,8 @@ const Navbar = () => {
                 key={link.href}
                 to={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`block py-2 text-sm font-medium transition-colors hover:text-primary ${
-                  isActive(link.href) ? "text-primary" : "text-muted-foreground"
-                }`}
+                className={`block py-2 text-sm font-medium transition-colors hover:text-primary ${isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                  }`}
               >
                 {link.label}
               </Link>
