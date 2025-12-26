@@ -146,7 +146,7 @@ export const createOrder = async (req: Request, res: Response) => {
             });
         }
 
-        res.status(201).json({
+        return res.status(201).json({
             success: true,
             data: order,
             message: 'Order created successfully',
@@ -164,7 +164,7 @@ export const createOrder = async (req: Request, res: Response) => {
         }
 
         console.error('Create order error:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: {
                 code: 'CREATE_ORDER_ERROR',
@@ -201,13 +201,13 @@ export const getAllOrders = async (req: Request, res: Response) => {
             take: parseInt(limit as string),
         });
 
-        res.json({
+        return res.json({
             success: true,
             data: orders,
         });
     } catch (error) {
         console.error('Get orders error:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: {
                 code: 'GET_ORDERS_ERROR',
@@ -246,7 +246,7 @@ export const getOrderById = async (req: Request, res: Response) => {
             });
         }
 
-        res.json({
+        return res.json({
             success: true,
             data: order,
         });
@@ -259,6 +259,7 @@ export const getOrderById = async (req: Request, res: Response) => {
                 message: 'Failed to fetch order',
             },
         });
+        return;
     }
 };
 
@@ -292,20 +293,21 @@ export const updateOrderStatus = async (req: Request, res: Response) => {
             },
         });
 
-        res.json({
+        return res.json({
             success: true,
             data: order,
             message: 'Order status updated successfully',
         });
     } catch (error) {
         console.error('Update order status error:', error);
-        res.status(500).json({
+        return res.status(500).json({
             success: false,
             error: {
                 code: 'UPDATE_ORDER_ERROR',
                 message: 'Failed to update order status',
             },
         });
+        return;
     }
 };
 
@@ -340,7 +342,7 @@ export const getOrderByTracking = async (req: Request, res: Response) => {
         // Don't expose sensitive user info in public endpoint
         const { user, ...orderData } = order as any;
 
-        res.json({
+        return res.json({
             success: true,
             data: orderData,
         });
@@ -353,5 +355,6 @@ export const getOrderByTracking = async (req: Request, res: Response) => {
                 message: 'Failed to fetch order',
             },
         });
+        return;
     }
 };

@@ -38,6 +38,7 @@ router.post('/', authenticateAdmin, upload.single('image'), (req, res) => {
                 message: 'Failed to upload file',
             },
         });
+        return;
     }
 });
 

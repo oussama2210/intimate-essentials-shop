@@ -73,13 +73,13 @@ export const getAllProducts = async (req: Request, res: Response) => {
       reviews: product.reviews || 0,
     }));
 
-    res.json({
+    return res.json({
       success: true,
       data: transformedProducts,
     });
   } catch (error) {
     console.error('Get products error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'GET_PRODUCTS_ERROR',
@@ -129,19 +129,20 @@ export const getProductById = async (req: Request, res: Response) => {
       reviews: product.reviews || 0,
     };
 
-    res.json({
+    return res.json({
       success: true,
       data: transformedProduct,
     });
   } catch (error) {
     console.error('Get product error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'GET_PRODUCT_ERROR',
         message: 'Failed to fetch product',
       },
     });
+    return;
   }
 };
 
@@ -203,7 +204,7 @@ export const createProduct = async (req: Request, res: Response) => {
       });
     }
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       data: product,
       message: 'Product created successfully',
@@ -221,13 +222,14 @@ export const createProduct = async (req: Request, res: Response) => {
     }
 
     console.error('Create product error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'CREATE_PRODUCT_ERROR',
         message: 'Failed to create product',
       },
     });
+    return;
   }
 };
 
@@ -274,7 +276,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       });
     }
 
-    res.json({
+    return res.json({
       success: true,
       data: product,
       message: 'Product updated successfully',
@@ -292,13 +294,14 @@ export const updateProduct = async (req: Request, res: Response) => {
     }
 
     console.error('Update product error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'UPDATE_PRODUCT_ERROR',
         message: 'Failed to update product',
       },
     });
+    return;
   }
 };
 
@@ -313,13 +316,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
       data: { isActive: false },
     });
 
-    res.json({
+    return res.json({
       success: true,
       message: 'Product deleted successfully',
     });
   } catch (error) {
     console.error('Delete product error:', error);
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       error: {
         code: 'DELETE_PRODUCT_ERROR',
