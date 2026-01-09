@@ -1,4 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +10,7 @@ import { Order } from "@/types/order";
 const OrderSuccess = () => {
     const location = useLocation();
     const order = location.state?.order as Order;
+    const { trackEvent } = useFacebookPixel();
 
     if (!order) {
         return (
@@ -22,6 +25,18 @@ const OrderSuccess = () => {
             </div>
         );
     }
+
+    useEffect(() => {
+        if (order) {
+            trackEvent('Purchase', {
+                content_ids: order.items?.map(item => item.productId) || [],
+                content_type: 'product',
+                value: parseFloat(order.totalAmount.toString()),
+                currency: 'DZD',
+                order_id: order.id // Assuming order has an ID
+            });
+        }
+    }, [order, trackEvent]);
 
     return (
         <div className="min-h-screen bg-background">

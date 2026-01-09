@@ -24,8 +24,7 @@ app.use(helmet({
 }));
 app.use(cors({
   origin: [
-    'http://localhost:5173',
-    'http://localhost:4173',
+    
     'https://intimate-essentials-shop.vercel.app',
     'https://intimate-essentials-shop-production.up.railway.app'
   ],

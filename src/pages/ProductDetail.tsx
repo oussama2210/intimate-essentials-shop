@@ -1,4 +1,6 @@
 import { useParams, Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import QuickOrderForm from "@/components/QuickOrderForm";
 import { useProducts } from "@/context/ProductContext";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +16,7 @@ const ProductDetail = () => {
   const { getProduct, products } = useProducts();
   const { addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
+  const { trackEvent } = useFacebookPixel();
 
   const product = getProduct(id || "");
 
@@ -31,11 +34,30 @@ const ProductDetail = () => {
     );
   }
 
+  useEffect(() => {
+    if (product) {
+      trackEvent('ViewContent', {
+        content_name: product.name,
+        content_ids: [product.id],
+        content_type: 'product',
+        value: product.price,
+        currency: 'DZD'
+      });
+    }
+  }, [product, trackEvent]);
+
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
     }
     toast.success(`تمت إضافة ${quantity} من ${product.name} إلى السلة`);
+    trackEvent('AddToCart', {
+      content_name: product.name,
+      content_ids: [product.id],
+      content_type: 'product',
+      value: product.price * quantity,
+      currency: 'DZD'
+    });
   };
 
   const relatedProducts = products

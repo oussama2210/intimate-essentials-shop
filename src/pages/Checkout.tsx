@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
+import { useFacebookPixel } from "@/hooks/useFacebookPixel";
 import { orderService } from "@/services/orderService";
 import { locationService } from "@/services/locationService";
 import Navbar from "@/components/Navbar";
@@ -30,6 +31,7 @@ interface Baladiya {
 const Checkout = () => {
     const navigate = useNavigate();
     const { items, totalPrice, clearCart } = useCart();
+    const { trackEvent } = useFacebookPixel();
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [wilayas, setWilayas] = useState<Wilaya[]>([]);
@@ -55,6 +57,19 @@ const Checkout = () => {
             navigate("/products");
         }
     }, [items, navigate]);
+
+    // Track InitiateCheckout
+    useEffect(() => {
+        if (items.length > 0) {
+            trackEvent('InitiateCheckout', {
+                content_ids: items.map(item => item.id),
+                content_type: 'product',
+                currency: 'DZD',
+                value: totalPrice,
+                num_items: items.reduce((acc, item) => acc + item.quantity, 0)
+            });
+        }
+    }, [items, totalPrice, trackEvent]);
 
     // Fetch wilayas on mount
     useEffect(() => {
